@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K9INE Studio Hub</title>
-    <!-- Tailwind CSS CDN for modern styling -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,17 +15,25 @@
                         darkbg: '#09090b',
                         cardbg: '#18181b',
                         accent: '#ef4444',
+                        success: '#22c55e',
+                        danger: '#f87171'
                     }
                 }
             }
         }
     </script>
-    <!-- Telegram Web App SDK -->
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <style>
+        .field-error {
+            border-color: rgba(248, 113, 113, 0.8) !important;
+            box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.2);
+        }
+    </style>
 </head>
 <body class="bg-darkbg text-zinc-100 min-h-screen font-sans antialiased p-4 selection:bg-accent selection:text-white">
-
-    <div class="max-w-md mx-auto space-y-6 pb-12">
+    <main class="max-w-md mx-auto space-y-6 pb-12">
         <header class="text-center space-y-2 pt-4">
             <div class="inline-block px-3 py-1 bg-accent/10 border border-accent/20 rounded-full text-xs font-semibold tracking-wider text-accent uppercase">
                 TMR Records • IP-Secured
@@ -46,10 +54,9 @@
 
         <section class="space-y-3">
             <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300">Service Architecture & Pricing</h2>
-            
+
             <div class="space-y-2 text-xs">
-                <!-- Tracking -->
-                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center gap-3">
                     <div>
                         <div class="font-bold text-white">🎤 Tracking Session (Per Hr)</div>
                         <div class="text-zinc-400 text-[11px]">Calibrated acoustics & mic matching</div>
@@ -57,8 +64,7 @@
                     <div class="text-right font-mono font-bold text-accent">$10 - $40</div>
                 </div>
 
-                <!-- Tuning -->
-                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center gap-3">
                     <div>
                         <div class="font-bold text-white">🔧 Vocal Tuning & Alignment</div>
                         <div class="text-zinc-400 text-[11px]">Harmonic pitch & phase sync</div>
@@ -66,8 +72,7 @@
                     <div class="text-right font-mono font-bold text-accent">$12 - $60</div>
                 </div>
 
-                <!-- Mixing -->
-                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center gap-3">
                     <div>
                         <div class="font-bold text-white">🎚️ Novelty Mixing</div>
                         <div class="text-zinc-400 text-[11px]">Analog saturation & stereo imaging</div>
@@ -75,8 +80,7 @@
                     <div class="text-right font-mono font-bold text-accent">$28 - $150</div>
                 </div>
 
-                <!-- Full Production -->
-                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center gap-3">
                     <div>
                         <div class="font-bold text-white">🚀 Full Production (Zero-to-Hero)</div>
                         <div class="text-zinc-400 text-[11px]">End-to-end master ready production</div>
@@ -88,11 +92,11 @@
 
         <section class="bg-cardbg border border-zinc-800 rounded-2xl p-4 shadow-xl space-y-4">
             <h2 class="text-sm font-bold uppercase tracking-wider text-white">Project Intake Form</h2>
-            
-            <form id="intakeForm" onsubmit="submitProjectData(event)" class="space-y-3 text-xs">
+
+            <form id="intakeForm" class="space-y-3 text-xs" novalidate>
                 <div>
-                    <label class="block text-zinc-400 mb-1 font-medium">Select Service Tier</label>
-                    <select id="serviceSelect" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 focus:outline-none focus:border-accent">
+                    <label for="serviceSelect" class="block text-zinc-400 mb-1 font-medium">Select Service Tier</label>
+                    <select id="serviceSelect" name="service" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 focus:outline-none focus:border-accent">
                         <option value="Tracking Session">Tracking Session ($10 - $40)</option>
                         <option value="Vocal Tuning & Alignment">Vocal Tuning & Alignment ($12 - $60)</option>
                         <option value="Novelty Mixing">Novelty Mixing ($28 - $150)</option>
@@ -101,16 +105,36 @@
                 </div>
 
                 <div>
-                    <label class="block text-zinc-400 mb-1 font-medium">Budget & Access Tier Level</label>
-                    <input type="text" id="budgetTier" placeholder="e.g. Quality Tier ($85) or Commercial" required class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-accent">
+                    <label for="budgetTier" class="block text-zinc-400 mb-1 font-medium">Budget & Access Tier Level</label>
+                    <input
+                        type="text"
+                        id="budgetTier"
+                        name="budgetTier"
+                        placeholder="e.g. Quality Tier ($85) or Commercial"
+                        required
+                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-accent"
+                    >
                 </div>
 
                 <div>
-                    <label class="block text-zinc-400 mb-1 font-medium">Artist Name, Genre & Stem Link</label>
-                    <textarea id="projectDetails" rows="3" placeholder="Artist: Name | Genre: Trap | Link: Google Drive / Dropbox stems (24-bit / 48kHz)" required class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-accent"></textarea>
+                    <label for="projectDetails" class="block text-zinc-400 mb-1 font-medium">Artist Name, Genre & Stem Link</label>
+                    <textarea
+                        id="projectDetails"
+                        name="projectDetails"
+                        rows="3"
+                        placeholder="Artist: Name | Genre: Trap | Link: Google Drive / Dropbox stems (24-bit / 48kHz)"
+                        required
+                        class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-accent"
+                    ></textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-accent/20 cursor-pointer">
+                <div id="status" class="hidden rounded-lg border border-zinc-700 bg-zinc-950 p-2 text-[11px]"></div>
+
+                <button
+                    id="submitButton"
+                    type="submit"
+                    class="w-full bg-accent hover:bg-accent/90 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-accent/20 cursor-pointer"
+                >
                     Submit Project Securely
                 </button>
             </form>
@@ -119,33 +143,97 @@
         <footer class="text-center text-[10px] text-zinc-500 pt-2">
             Technical Rigor: 24-bit Depth / 48 kHz Sample Rate Output Standard.
         </footer>
-    </div>
+    </main>
 
     <script>
-        // Initialize Telegram WebApp SDK
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Expand mini app to full screen
+        const tg = window.Telegram?.WebApp;
+        const form = document.getElementById('intakeForm');
+        const statusBox = document.getElementById('status');
+        const submitButton = document.getElementById('submitButton');
 
-        function submitProjectData(event) {
+        function showStatus(message, type = 'info') {
+            statusBox.classList.remove('hidden');
+            statusBox.classList.remove('border-zinc-700', 'border-red-500', 'border-emerald-500');
+            statusBox.classList.add(
+                type === 'error' ? 'border-red-500' : type === 'success' ? 'border-emerald-500' : 'border-zinc-700'
+            );
+            statusBox.textContent = message;
+        }
+
+        function clearFieldErrors() {
+            form.querySelectorAll('input, textarea').forEach((field) => {
+                field.classList.remove('field-error');
+            });
+        }
+
+        function validateForm() {
+            clearFieldErrors();
+            const budget = document.getElementById('budgetTier').value.trim();
+            const details = document.getElementById('projectDetails').value.trim();
+
+            if (!budget || !details) {
+                if (!budget) {
+                    document.getElementById('budgetTier').classList.add('field-error');
+                }
+                if (!details) {
+                    document.getElementById('projectDetails').classList.add('field-error');
+                }
+
+                showStatus('Please complete all required fields.', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        if (!tg) {
+            showStatus('Telegram WebApp SDK not detected. Open this page inside Telegram for full functionality.', 'error');
+            submitButton.disabled = true;
+        } else {
+            tg.expand();
+            tg.enableClosingConfirmation?.();
+        }
+
+        form.addEventListener('submit', function (event) {
             event.preventDefault();
-            
+
+            if (!tg) return;
+
+            if (!validateForm()) {
+                return;
+            }
+
             const service = document.getElementById('serviceSelect').value;
-            const budget = document.getElementById('budgetTier').value;
-            const details = document.getElementById('projectDetails').value;
+            const budget = document.getElementById('budgetTier').value.trim();
+            const details = document.getElementById('projectDetails').value.trim();
             const user = tg.initDataUnsafe?.user;
 
             const payload = {
                 user_id: user?.id || 'unknown',
                 username: user?.username || 'guest',
-                service: service,
+                service,
                 budget_tier: budget,
-                details: details
+                details
             };
 
-            // Send payload back to bot chat
-            tg.sendData(JSON.stringify(payload));
-            tg.close(); // Close mini app upon successful submission
-        }
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            showStatus('Sending project details...', 'info');
+
+            try {
+                tg.sendData(JSON.stringify(payload));
+                showStatus('Project sent successfully.', 'success');
+
+                setTimeout(() => {
+                    tg.close();
+                }, 600);
+            } catch (error) {
+                console.error('Telegram sendData failed:', error);
+                showStatus('Something went wrong while sending your project. Please try again.', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Project Securely';
+            }
+        });
     </script>
 </body>
 </html>
