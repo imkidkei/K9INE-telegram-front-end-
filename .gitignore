@@ -1,3 +1,7 @@
+# ============================================
+# Frontend / Node.js
+# ============================================
+
 # Dependencies
 node_modules/
 .pnpm-store/
@@ -19,7 +23,6 @@ storybook-static/
 
 # TypeScript
 *.tsbuildinfo
-dist/
 
 # Logs
 logs/
@@ -30,25 +33,74 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Environment files
+# ============================================
+# Backend / Java (if needed later)
+# ============================================
+
+# Compiled class files
+*.class
+
+# Package artifacts
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.backup
+release.properties
+
+# Gradle
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+gradle-wrapper.properties
+
+# ============================================
+# Environment & Secrets
+# ============================================
+
 .env
 .env.local
 .env.*.local
 !.env.example
 
+# ============================================
 # Editor / IDE
+# ============================================
+
 .vscode/
 .idea/
 *.swp
 *.swo
 *.sublime-workspace
 *.sublime-project
+*.iml
 
+# ============================================
 # OS files
+# ============================================
+
 .DS_Store
 Thumbs.db
 
+# ============================================
 # Testing
+# ============================================
+
 .nyc_output/
 .mocha/
 .jest/
+coverage/
