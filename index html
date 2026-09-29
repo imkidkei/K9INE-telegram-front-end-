@@ -1,0 +1,20 @@
+# make sure you're on main and up-to-date
+git checkout main
+git pull origin main
+
+# create necessary folder for workflow
+mkdir -p .github/workflows
+
+# Save the files:
+# - index.html (use the single-file content you already have)
+# - .github/workflows/pages.yml (use the YAML above)
+# - README.md (content below)
+
+# Stage files
+git add index.html .github/workflows/pages.yml README.md
+
+# Commit with a clear message
+git commit -m "chore(pages): add single-file site (index.html), Pages workflow, and README"
+
+# Push to origin/main
+git push origin main
