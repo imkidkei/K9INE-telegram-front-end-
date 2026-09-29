@@ -1,647 +1,151 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>K9INE Studio // Telegram Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K9INE Studio Hub</title>
+    <!-- Tailwind CSS CDN for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&family=Vazirmatn:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#09090b',
+                        cardbg: '#18181b',
+                        accent: '#ef4444',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <style>
-        :root {
-            --neon-red: #fe1c03;
-            --neon-red-glow: rgba(254, 28, 3, 0.45);
-            --neon-cyan: #00f0ff;
-            --neon-cyan-glow: rgba(0, 240, 255, 0.45);
-            --hud-bg: #07090e;
-            --hud-surface: #0c1017;
-            --hud-border: #1e2638;
-        }
-
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--hud-bg);
-            color: #e2e8f0;
-            font-family: 'Vazirmatn', -apple-system, sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        .font-mono-tech {
-            font-family: 'JetBrains Mono', 'Chakra Petch', monospace;
-        }
-
-        .hud-border {
-            border: 1px solid var(--hud-border);
-            position: relative;
-        }
-
-        /* Cyberpunk Corner Decors */
-        .cyber-corners {
-            position: relative;
-        }
-        .cyber-corners::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            width: 8px;
-            height: 8px;
-            border-top: 2px solid var(--neon-cyan);
-            border-right: 2px solid var(--neon-cyan);
-            pointer-events: none;
-        }
-        .cyber-corners::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: -2px;
-            width: 8px;
-            height: 8px;
-            border-bottom: 2px solid var(--neon-cyan);
-            border-left: 2px solid var(--neon-cyan);
-            pointer-events: none;
-        }
-
-        /* Neon Glow Frames */
-        .neon-card-red {
-            border: 1.5px solid var(--neon-red);
-            box-shadow: 0 0 15px var(--neon-red-glow), inset 0 0 10px rgba(254, 28, 3, 0.2);
-            background: radial-gradient(circle at center, rgba(254, 28, 3, 0.08) 0%, rgba(12, 16, 23, 0.95) 75%);
-        }
-
-        .neon-card-cyan {
-            border: 1.5px solid var(--neon-cyan);
-            box-shadow: 0 0 15px var(--neon-cyan-glow), inset 0 0 10px rgba(0, 240, 255, 0.2);
-            background: radial-gradient(circle at center, rgba(0, 240, 255, 0.08) 0%, rgba(12, 16, 23, 0.95) 75%);
-        }
-
-        .neon-card-white {
-            border: 1.5px solid #cbd5e1;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.25), inset 0 0 8px rgba(255, 255, 255, 0.1);
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 0%, rgba(12, 16, 23, 0.95) 75%);
-        }
-
-        /* Pulsing Glitch / Scanline effect */
-        .scanlines {
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%, 
-                rgba(0, 0, 0, 0.25) 50%
-            ), linear-gradient(
-                90deg,
-                rgba(255, 0, 0, 0.03),
-                rgba(0, 255, 0, 0.01),
-                rgba(0, 0, 255, 0.03)
-            );
-            background-size: 100% 3px, 6px 100%;
-            pointer-events: none;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #090c12;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1f2738;
-            border-radius: 2px;
-        }
-    </style>
 </head>
-<body class="p-2 sm:p-4 max-w-md mx-auto relative flex flex-col justify-between select-none">
-    <div class="fixed inset-0 scanlines z-50"></div>
+<body class="bg-darkbg text-zinc-100 min-h-screen font-sans antialiased p-4 selection:bg-accent selection:text-white">
 
-    <header class="hud-border bg-[#090c13]/90 rounded-t-xl px-3 py-1.5 mb-2 flex items-center justify-between text-[10px] font-mono-tech border-b-2 border-red-600/80">
-        <div class="flex items-center gap-1.5 text-cyan-400">
-            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span>TELEMETRY // LIVE</span>
-        </div>
-        <div class="flex items-center gap-3">
-            <button id="sfx-toggle" onclick="toggleAudio()" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
-                <span id="sfx-icon">🔊</span> <span class="text-[9px]">SFX</span>
-            </button>
-            <button onclick="toggleCurrency()" class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-cyan-300 font-bold border border-cyan-800 hover:border-cyan-400">
-                <span id="currency-label">TOMAN</span>
-            </button>
-            <div class="flex items-center gap-1 text-slate-400">
-                <span>STATUS</span>
-                <div class="w-6 h-3 border border-slate-500 rounded-sm p-[1px] flex gap-[1px]">
-                    <div class="w-1.5 h-full bg-emerald-400"></div>
-                    <div class="w-1.5 h-full bg-emerald-400"></div>
-                    <div class="w-1.5 h-full bg-emerald-400"></div>
-                </div>
+    <div class="max-w-md mx-auto space-y-6 pb-12">
+        <header class="text-center space-y-2 pt-4">
+            <div class="inline-block px-3 py-1 bg-accent/10 border border-accent/20 rounded-full text-xs font-semibold tracking-wider text-accent uppercase">
+                TMR Records • IP-Secured
             </div>
-        </div>
-    </header>
+            <h1 class="text-2xl font-black tracking-tight text-white">K9INE STUDIO</h1>
+            <p class="text-xs text-zinc-400">Authenticity • Consistency • Clarity</p>
+        </header>
 
-    <main class="space-y-3">
-        <!-- Dual Insignia Hero Grid -->
-        <div class="grid grid-cols-12 gap-2 items-center">
+        <section class="bg-cardbg border border-zinc-800 rounded-2xl p-4 shadow-xl">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-accent mb-2">Samurai Code & Pledge</h2>
+            <p class="text-xs text-zinc-300 leading-relaxed italic">
+                "We guarantee no guarantee on the consumer and marketing unless chosen otherwise. What we guarantee is improving your quality of work and experience level."
+            </p>
+            <p class="text-[11px] text-zinc-500 mt-2">
+                Absolute confidentiality and uncompromising dynamic headroom (-12 dBFS).
+            </p>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-300">Service Architecture & Pricing</h2>
             
-            <!-- Left Hero: Shogun (اعتبار استودیو) -->
-            <div class="col-span-4 neon-card-red rounded-xl p-2.5 flex flex-col items-center justify-between min-h-[165px] relative overflow-hidden group transition-all duration-300 hover:scale-[1.02]">
-                <div class="w-full flex justify-between items-center text-[7px] font-mono-tech text-red-400/80">
-                    <span>OCTA</span>
-                    <span>POS:0590</span>
-                </div>
-                
-                <span class="text-[9px] font-bold text-red-500 tracking-wider">اعتبار استودیو</span>
-                
-                <!-- Shogun Vector Icon -->
-                <div class="my-1 py-1 flex items-center justify-center">
-                    <svg class="w-14 h-16 text-white drop-shadow-[0_0_10px_rgba(254,28,3,0.9)]" viewBox="0 0 100 120" fill="currentColor">
-                        <!-- Shogun Kabuto Helmet Crest -->
-                        <path d="M50 5 L55 22 L72 12 L63 26 L80 32 L60 38 L68 55 L50 48 L32 55 L40 38 L20 32 L37 26 L28 12 L45 22 Z" />
-                        <!-- Armored Torso / Kamishimo -->
-                        <path d="M35 52 L65 52 L78 80 L62 80 L58 65 L42 65 L38 80 L22 80 Z" />
-                        <!-- Stacked Samurai Mon Bars -->
-                        <rect x="25" y="85" width="50" height="9" rx="2" />
-                        <rect x="32" y="98" width="36" height="8" rx="2" />
-                        <rect x="20" y="110" width="60" height="8" rx="2" />
-                    </svg>
+            <div class="space-y-2 text-xs">
+                <!-- Tracking -->
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-white">🎤 Tracking Session (Per Hr)</div>
+                        <div class="text-zinc-400 text-[11px]">Calibrated acoustics & mic matching</div>
+                    </div>
+                    <div class="text-right font-mono font-bold text-accent">$10 - $40</div>
                 </div>
 
-                <div class="w-full flex justify-between items-center text-[7px] font-mono-tech text-slate-400">
-                    <span>1023</span>
-                    <span class="text-red-400">0.0400</span>
+                <!-- Tuning -->
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-white">🔧 Vocal Tuning & Alignment</div>
+                        <div class="text-zinc-400 text-[11px]">Harmonic pitch & phase sync</div>
+                    </div>
+                    <div class="text-right font-mono font-bold text-accent">$12 - $60</div>
                 </div>
-                <span class="text-[8px] font-mono-tech bg-red-950/80 text-red-300 px-1.5 py-0.5 rounded border border-red-700/50">VERIFIED</span>
+
+                <!-- Mixing -->
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-white">🎚️ Novelty Mixing</div>
+                        <div class="text-zinc-400 text-[11px]">Analog saturation & stereo imaging</div>
+                    </div>
+                    <div class="text-right font-mono font-bold text-accent">$28 - $150</div>
+                </div>
+
+                <!-- Full Production -->
+                <div class="bg-cardbg border border-zinc-800/80 rounded-xl p-3 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-white">🚀 Full Production (Zero-to-Hero)</div>
+                        <div class="text-zinc-400 text-[11px]">End-to-end master ready production</div>
+                    </div>
+                    <div class="text-right font-mono font-bold text-accent">$50 - $330</div>
+                </div>
             </div>
+        </section>
 
-            <!-- Center Brand Title -->
-            <div class="col-span-4 text-center flex flex-col items-center justify-center">
-                <div class="text-[18px] font-black tracking-tighter text-white font-mono-tech leading-none">
-                    K9INE
-                </div>
-                <div class="text-[8px] font-bold tracking-[2px] text-cyan-400 font-mono-tech mb-2">
-                    PRODUCTION STUDIO
-                </div>
-                <h1 class="text-sm font-extrabold text-white leading-tight">
-                    به ربات تلگرام<br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-white to-cyan-400">خوش آمدید</span>
-                </h1>
-                <div class="w-10 h-0.5 bg-gradient-to-r from-red-500 to-cyan-400 mt-1.5 rounded-full"></div>
-            </div>
-
-            <!-- Right Hero: Ronin (تمرکز بر کیفیت) -->
-            <div class="col-span-4 neon-card-cyan rounded-xl p-2.5 flex flex-col items-center justify-between min-h-[165px] relative overflow-hidden group transition-all duration-300 hover:scale-[1.02]">
-                <div class="w-full flex justify-between items-center text-[7px] font-mono-tech text-cyan-400/80">
-                    <span>SIGNAL</span>
-                    <span>96kHz</span>
-                </div>
-                
-                <span class="text-[9px] font-bold text-cyan-400 tracking-wider">تمرکز بر کیفیت</span>
-                
-                <!-- Ronin Vector Icon -->
-                <div class="my-1 py-1 flex items-center justify-center">
-                    <svg class="w-14 h-16 text-white drop-shadow-[0_0_10px_rgba(0,240,255,0.9)]" viewBox="0 0 100 120" fill="currentColor">
-                        <!-- Conical Hat (Kasa) -->
-                        <path d="M50 10 L78 28 L22 28 Z" />
-                        <!-- Head and Katana Scabbards Behind -->
-                        <circle cx="50" cy="34" r="5" />
-                        <line x1="28" y1="48" x2="48" y2="35" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                        <line x1="24" y1="56" x2="46" y2="42" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                        <!-- Cloaked Silhouette -->
-                        <path d="M42 36 L58 36 L66 65 L34 65 Z" />
-                        <!-- Japanese Cross Base Structure -->
-                        <path d="M46 65 L54 65 L54 115 L46 115 Z" />
-                        <path d="M25 72 L75 102 L70 108 L20 78 Z" />
-                        <path d="M75 72 L25 102 L20 96 L70 66 Z" />
-                    </svg>
-                </div>
-
-                <div class="w-full flex justify-between items-center text-[7px] font-mono-tech text-slate-400">
-                    <span>HI-RES</span>
-                    <span class="text-cyan-400">24-BIT</span>
-                </div>
-                <span class="text-[8px] font-mono-tech bg-cyan-950/80 text-cyan-300 px-1.5 py-0.5 rounded border border-cyan-700/50">PRECISION</span>
-            </div>
-
-        </div>
-
-        <!-- Brand Triad Cards: اصالت | ثبات | شفافیت -->
-        <div class="grid grid-cols-3 gap-2">
+        <section class="bg-cardbg border border-zinc-800 rounded-2xl p-4 shadow-xl space-y-4">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-white">Project Intake Form</h2>
             
-            <!-- Authenticity (اصالت) -->
-            <div onclick="showModal('authenticity')" class="neon-card-red rounded-lg p-2 cursor-pointer transition hover:bg-red-950/30">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[11px] font-black text-red-400">اصالت</span>
-                    <span class="text-red-500 text-xs">⚔️</span>
+            <form id="intakeForm" onsubmit="submitProjectData(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-zinc-400 mb-1 font-medium">Select Service Tier</label>
+                    <select id="serviceSelect" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 focus:outline-none focus:border-accent">
+                        <option value="Tracking Session">Tracking Session ($10 - $40)</option>
+                        <option value="Vocal Tuning & Alignment">Vocal Tuning & Alignment ($12 - $60)</option>
+                        <option value="Novelty Mixing">Novelty Mixing ($28 - $150)</option>
+                        <option value="Full Production">Full Production Zero-to-Hero ($50 - $330)</option>
+                    </select>
                 </div>
-                <p class="text-[8.5px] text-slate-300 leading-tight">
-                    تعهد به هویت صوتی و حفظ حقوق معنوی اثر شما (IP).
-                </p>
-                <div class="mt-1 text-[7px] font-mono-tech text-red-400/90 text-left">AUTHENTICITY</div>
-            </div>
 
-            <!-- Consistency (ثبات) -->
-            <div onclick="showModal('consistency')" class="neon-card-white rounded-lg p-2 cursor-pointer transition hover:bg-slate-800/40">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[11px] font-black text-white">ثبات</span>
-                    <span class="text-slate-200 text-xs">⚡</span>
+                <div>
+                    <label class="block text-zinc-400 mb-1 font-medium">Budget & Access Tier Level</label>
+                    <input type="text" id="budgetTier" placeholder="e.g. Quality Tier ($85) or Commercial" required class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-accent">
                 </div>
-                <p class="text-[8.5px] text-slate-300 leading-tight">
-                    زنجیره آنالوگ پایدار، تجهیزات کالیبره و خروجی یکدست.
-                </p>
-                <div class="mt-1 text-[7px] font-mono-tech text-slate-300 text-left">CONSISTENCY</div>
-            </div>
 
-            <!-- Clarity (شفافیت) -->
-            <div onclick="showModal('clarity')" class="neon-card-cyan rounded-lg p-2 cursor-pointer transition hover:bg-cyan-950/30">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[11px] font-black text-cyan-400">شفافیت</span>
-                    <span class="text-cyan-400 text-xs">🎯</span>
+                <div>
+                    <label class="block text-zinc-400 mb-1 font-medium">Artist Name, Genre & Stem Link</label>
+                    <textarea id="projectDetails" rows="3" placeholder="Artist: Name | Genre: Trap | Link: Google Drive / Dropbox stems (24-bit / 48kHz)" required class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-accent"></textarea>
                 </div>
-                <p class="text-[8.5px] text-slate-300 leading-tight">
-                    تعرفه‌های روشن و سلب مسئولیت صریح مارکتینگ و استریم.
-                </p>
-                <div class="mt-1 text-[7px] font-mono-tech text-cyan-400/90 text-left">CLARITY</div>
-            </div>
 
-        </div>
-
-        <!-- Core Studio Services 4-Grid -->
-        <div class="grid grid-cols-2 gap-2">
-            
-            <!-- Service 1: سشن ضبط -->
-            <div onclick="selectService('tracking')" id="card-tracking" class="hud-border bg-[#0c1017] rounded-xl p-2.5 cursor-pointer border-r-4 border-r-red-500 hover:border-red-400 transition-all">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-black text-white">سشن ضبط</span>
-                    <span class="text-red-500">🎙️</span>
-                </div>
-                <div class="text-[9px] text-slate-400 font-mono-tech mb-2">Recording Session</div>
-                <div class="flex items-center justify-between bg-black/40 rounded px-2 py-1 border border-slate-800">
-                    <span class="text-[10px] font-mono-tech text-red-400 font-bold price-display" data-usd="10 - 40 $" data-toman="۲.۴ - ۹.۷ م.ت">۲.۴ - ۹.۷ م.ت</span>
-                    <span class="text-[8px] text-slate-500">ساعتی</span>
-                </div>
-            </div>
-
-            <!-- Service 2: ادیت و تیونینگ -->
-            <div onclick="selectService('tuning')" id="card-tuning" class="hud-border bg-[#0c1017] rounded-xl p-2.5 cursor-pointer border-r-4 border-r-amber-500 hover:border-amber-400 transition-all">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-black text-white">ادیت و تیونینگ</span>
-                    <span class="text-amber-400">🎛️</span>
-                </div>
-                <div class="text-[9px] text-slate-400 font-mono-tech mb-2">Editing &amp; Tuning</div>
-                <div class="flex items-center justify-between bg-black/40 rounded px-2 py-1 border border-slate-800">
-                    <span class="text-[10px] font-mono-tech text-amber-400 font-bold price-display" data-usd="12 - 60 $" data-toman="۲.۹ - ۱۴.۶ م.ت">۲.۹ - ۱۴.۶ م.ت</span>
-                    <span class="text-[8px] text-slate-500">هر لاین</span>
-                </div>
-            </div>
-
-            <!-- Service 3: میکس تخصصی -->
-            <div onclick="selectService('mix')" id="card-mix" class="hud-border bg-[#0c1017] rounded-xl p-2.5 cursor-pointer border-r-4 border-r-purple-500 hover:border-purple-400 transition-all">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-black text-white">میکس تخصصی</span>
-                    <span class="text-purple-400">🎚️</span>
-                </div>
-                <div class="text-[9px] text-slate-400 font-mono-tech mb-2">Quality &amp; Stems Mix</div>
-                <div class="flex items-center justify-between bg-black/40 rounded px-2 py-1 border border-slate-800">
-                    <span class="text-[10px] font-mono-tech text-purple-400 font-bold price-display" data-usd="28 - 150 $" data-toman="۶.۸ - ۳۶.۶ م.ت">۶.۸ - ۳۶.۶ م.ت</span>
-                    <span class="text-[8px] text-slate-500">پروژه</span>
-                </div>
-            </div>
-
-            <!-- Service 4: پکیج صفر تا صد -->
-            <div onclick="selectService('full')" id="card-full" class="hud-border bg-[#0c1017] rounded-xl p-2.5 cursor-pointer border-r-4 border-r-cyan-400 hover:border-cyan-300 transition-all">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-black text-white">پکیج صفر تا صد</span>
-                    <span class="text-cyan-400">👑</span>
-                </div>
-                <div class="text-[9px] text-slate-400 font-mono-tech mb-2">Zero-to-Hero Production</div>
-                <div class="flex items-center justify-between bg-black/40 rounded px-2 py-1 border border-slate-800">
-                    <span class="text-[10px] font-mono-tech text-cyan-300 font-bold price-display" data-usd="50 - 330 $" data-toman="۱۲.۲ - ۸۰.۵ م.ت">۱۲.۲ - ۸۰.۵ م.ت</span>
-                    <span class="text-[8px] text-slate-500">کامل</span>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Interactive Spectrum Range Bar -->
-        <div class="hud-border bg-[#0c1017] rounded-xl p-3 space-y-2">
-            <div class="flex items-center justify-between text-[11px] font-bold">
-                <span class="text-white flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span>
-                    <span>طیف تعرفه‌ها (بر مبنای مدل دسترسی منصفانه)</span>
-                </span>
-                <span id="tier-name-badge" class="text-[9px] font-mono-tech px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-800">COMMUNITY TIER (10%)</span>
-            </div>
-
-            <!-- Step Progress Visualizer -->
-            <div class="grid grid-cols-5 gap-1.5 pt-1">
-                <button onclick="setTier(1)" id="tier-btn-1" class="h-8 rounded bg-gradient-to-t from-red-600 to-red-400 flex flex-col items-center justify-center border border-red-300 text-white font-mono-tech text-[9px] font-bold shadow-lg shadow-red-900/40">
-                    <span>10%</span>
-                    <span class="text-[7px]">فراگیر</span>
+                <button type="submit" class="w-full bg-accent hover:bg-accent/90 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-accent/20 cursor-pointer">
+                    Submit Project Securely
                 </button>
-                <button onclick="setTier(2)" id="tier-btn-2" class="h-8 rounded bg-slate-800 flex flex-col items-center justify-center border border-slate-700 text-slate-300 font-mono-tech text-[9px] hover:border-slate-500">
-                    <span>30%</span>
-                    <span class="text-[7px]">عادلانه</span>
-                </button>
-                <button onclick="setTier(3)" id="tier-btn-3" class="h-8 rounded bg-slate-800 flex flex-col items-center justify-center border border-slate-700 text-slate-300 font-mono-tech text-[9px] hover:border-slate-500">
-                    <span>50%</span>
-                    <span class="text-[7px]">همکار</span>
-                </button>
-                <button onclick="setTier(4)" id="tier-btn-4" class="h-8 rounded bg-slate-800 flex flex-col items-center justify-center border border-slate-700 text-slate-300 font-mono-tech text-[9px] hover:border-slate-500">
-                    <span>70%</span>
-                    <span class="text-[7px]">کیفی</span>
-                </button>
-                <button onclick="setTier(5)" id="tier-btn-5" class="h-8 rounded bg-slate-800 flex flex-col items-center justify-center border border-slate-700 text-slate-300 font-mono-tech text-[9px] hover:border-slate-500">
-                    <span>100%</span>
-                    <span class="text-[7px]">بازار آزاد</span>
-                </button>
-            </div>
-            
-            <div class="text-[9px] text-slate-400 flex justify-between items-center pt-1 font-mono-tech">
-                <span id="tier-desc">دسترسی اشتراکی برای پروژه‌های مستقل هنری با حفظ کیفیت کامل آنالوگ</span>
-                <span class="text-cyan-400 font-bold" id="tier-rate">50 $ (۱۲.۲ م.ت)</span>
-            </div>
-        </div>
+            </form>
+        </section>
 
-    </main>
-
-    <!-- Telegram Mini App Bottom Dock -->
-    <footer class="mt-3 space-y-2">
-        <!-- Interactive Chat Input Strip -->
-        <div class="hud-border bg-[#0b0f16] rounded-xl px-2.5 py-1.5 flex items-center justify-between gap-2 border-cyan-900/50 shadow-inner">
-            <button onclick="triggerAction('attachment')" class="p-1.5 text-slate-400 hover:text-cyan-400 transition" title="پیوست فایل صوتی">
-                📎
-            </button>
-            
-            <input id="user-input" type="text" placeholder="دستور یا پیام خود را بنویسید (مثلاً /services)..." 
-                class="bg-transparent border-none text-xs text-white placeholder-slate-500 focus:outline-none flex-1 font-mono-tech text-right"
-                onkeypress="if(event.key === 'Enter') sendCommand()">
-
-            <div class="flex items-center gap-1.5">
-                <button onclick="triggerAction('slash')" class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-cyan-400 font-mono-tech hover:bg-slate-700">
-                    /
-                </button>
-                <button onclick="triggerAction('emoji')" class="text-slate-400 hover:text-amber-400 text-sm">
-                    😊
-                </button>
-                <button onclick="sendCommand()" class="w-7 h-7 rounded-lg bg-gradient-to-r from-red-600 to-cyan-500 text-white flex items-center justify-center text-xs shadow-md">
-                    ➤
-                </button>
-            </div>
-        </div>
-
-        <!-- Verification Seal Strip -->
-        <div class="bg-[#080b10] border border-slate-800 rounded-lg p-2 flex items-center justify-between text-[8px] font-mono-tech text-slate-400">
-            <div class="flex items-center gap-1.5">
-                <span class="px-1.5 py-0.5 bg-red-950 text-red-400 rounded border border-red-800 font-bold">K9INE VERIFIED</span>
-                <span class="text-slate-500">•</span>
-                <span class="text-cyan-400">TMR // IP-SECURED</span>
-            </div>
-            <div class="flex items-center gap-2 text-slate-500">
-                <span>V2.4</span>
-                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Detail Cyber Modal -->
-    <div id="cyber-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="hud-border bg-[#0d121c] border-2 border-cyan-500 max-w-sm w-full rounded-2xl p-4 space-y-3 relative cyber-corners">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 bg-red-500 rounded-sm"></span>
-                    <h3 id="modal-title" class="text-sm font-black text-white">عنوان سرویس</h3>
-                </div>
-                <button onclick="closeModal()" class="w-6 h-6 rounded bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs">✕</button>
-            </div>
-            <div id="modal-body" class="text-xs text-slate-300 leading-relaxed space-y-2">
-                توضیحات سرویس...
-            </div>
-            <div class="flex justify-between items-center pt-2 border-t border-slate-800">
-                <span id="modal-badge" class="text-[9px] font-mono-tech px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">K9INE STANDARD</span>
-                <button onclick="requestBooking()" class="px-4 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold font-mono-tech transition shadow-lg shadow-red-600/30">
-                    ثبت نوبت (BOOK)
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-slate-900/95 border border-cyan-500 text-cyan-300 text-xs font-mono-tech shadow-xl flex items-center gap-2 pointer-events-none opacity-0 transition-opacity duration-300">
-        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-        <span id="toast-text">پیام سیستمی</span>
+        <footer class="text-center text-[10px] text-zinc-500 pt-2">
+            Technical Rigor: 24-bit Depth / 48 kHz Sample Rate Output Standard.
+        </footer>
     </div>
 
     <script>
-        // Audio Synthesizer for Cyber SFX
-        let audioEnabled = true;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // Initialize Telegram WebApp SDK
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Expand mini app to full screen
 
-        function playBeep(freq = 600, type = 'sine', duration = 0.08) {
-            if (!audioEnabled) return;
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {}
-        }
-
-        function toggleAudio() {
-            audioEnabled = !audioEnabled;
-            document.getElementById('sfx-icon').innerText = audioEnabled ? '🔊' : '🔇';
-            showToast(audioEnabled ? "SFX: فعال شد" : "SFX: بی‌صدا");
-        }
-
-        // Currency Toggle
-        let currentCurrency = 'toman';
-        function toggleCurrency() {
-            playBeep(850, 'triangle');
-            currentCurrency = currentCurrency === 'toman' ? 'usd' : 'toman';
-            document.getElementById('currency-label').innerText = currentCurrency.toUpperCase();
+        function submitProjectData(event) {
+            event.preventDefault();
             
-            document.querySelectorAll('.price-display').forEach(el => {
-                el.innerText = currentCurrency === 'usd' ? el.getAttribute('data-usd') : el.getAttribute('data-toman');
-            });
+            const service = document.getElementById('serviceSelect').value;
+            const budget = document.getElementById('budgetTier').value;
+            const details = document.getElementById('projectDetails').value;
+            const user = tg.initDataUnsafe?.user;
 
-            // Update spectrum bar rate readout
-            updateTierReadout();
-            showToast(`واحد پول: ${currentCurrency === 'usd' ? 'دلار ($)' : 'تومان'}`);
+            const payload = {
+                user_id: user?.id || 'unknown',
+                username: user?.username || 'guest',
+                service: service,
+                budget_tier: budget,
+                details: details
+            };
+
+            // Send payload back to bot chat
+            tg.sendData(JSON.stringify(payload));
+            tg.close(); // Close mini app upon successful submission
         }
-
-        // Tiers Configuration
-        const tiers = {
-            1: { pct: "10%", name: "COMMUNITY TIER (10%)", rateUSD: "$50", rateToman: "۱۲.۲ م.ت", desc: "دسترسی اشتراکی برای پروژه‌های مستقل هنری با حفظ کامل کیفیت زنجیره آنالوگ" },
-            2: { pct: "30%", name: "FAIR-ACCESS TIER (30%)", rateUSD: "$95", rateToman: "۲۳.۲ م.ت", desc: "نرخ عادلانه با اعمال ۴۰٪ تخفیف حمایتی برای پروداکشن‌های جدی" },
-            3: { pct: "50%", name: "PARTNER TIER (50%)", rateUSD: "$160", rateToman: "۳۹.۱ م.ت", desc: "نرخ ویژه همکاران دائمی و آرتیست‌های وابسته به لیبل TMR" },
-            4: { pct: "70%", name: "QUALITY BENCHMARK (70%)", rateUSD: "$210", rateToman: "۵۱.۲ م.ت", desc: "استاندارد کیفی استودیویی با سشن‌های بدون شتاب و مسترینگ پیشرفته" },
-            5: { pct: "100%", name: "OPEN MARKET (100%)", rateUSD: "$330", rateToman: "۸۰.۵ م.ت", desc: "سقف آزاد بازار تجاری همراه با اولویت رزرو آنی و پشتیبانی بازبینی نامحدود" }
-        };
-
-        let selectedTier = 1;
-        function setTier(tierNum) {
-            playBeep(400 + (tierNum * 120), 'square', 0.06);
-            selectedTier = tierNum;
-            
-            for (let i = 1; i <= 5; i++) {
-                const btn = document.getElementById(`tier-btn-${i}`);
-                if (i === tierNum) {
-                    btn.className = "h-8 rounded bg-gradient-to-t from-red-600 to-red-400 flex flex-col items-center justify-center border border-red-300 text-white font-mono-tech text-[9px] font-bold shadow-lg shadow-red-900/40";
-                } else {
-                    btn.className = "h-8 rounded bg-slate-800 flex flex-col items-center justify-center border border-slate-700 text-slate-300 font-mono-tech text-[9px] hover:border-slate-500";
-                }
-            }
-
-            updateTierReadout();
-        }
-
-        function updateTierReadout() {
-            const t = tiers[selectedTier];
-            document.getElementById('tier-name-badge').innerText = t.name;
-            document.getElementById('tier-desc').innerText = t.desc;
-            document.getElementById('tier-rate').innerText = currentCurrency === 'usd' ? t.rateUSD : t.rateToman;
-        }
-
-        // Service & Modal Logic
-        const modalData = {
-            authenticity: {
-                title: "اصالت (AUTHENTICITY)",
-                badge: "IP-SECURED",
-                content: `<p>ما با شما صادقانه گفتگو می‌کنیم و در تمامی جلوه‌های صوتی، بصری و پیام‌هایمان به هویت هنری پروژه پایبند می‌مانیم.</p>
-                          <div class="bg-red-950/40 p-2 rounded border border-red-800 text-[11px] font-mono-tech text-red-300">
-                          «WE COMMUNICATE HONESTLY AND STAY TRUE TO OUR IDENTITY IN EVERY AUDIO, VISUAL AND MESSAGE.»
-                          </div>`
-            },
-            consistency: {
-                title: "ثبات فنی (CONSISTENCY)",
-                badge: "STUDIO STANDARD",
-                content: `<p>کلیه سشن‌ها بر پایه زنجیره سیگنال کالیبره (-12 dBFS هدروم) و پردازشگرهای آنالوگ اختصاصی پیاده‌سازی می‌شوند تا تمام قطعات آلبوم یا سینگل ترک از یکپارچگی صوتی بهره‌مند شوند.</p>`
-            },
-            clarity: {
-                title: "شفافیت و منشور سامورایی (CLARITY)",
-                badge: "SAMURAI CODE",
-                content: `<p><strong>سلب مسئولیت صریح:</strong> ما هیچ تضمینی در خصوص مارکتینگ یا بازخورد تجاری مخاطب نمی‌دهیم؛ تعهد ما ارتقای بی‌قیدوشرط سطح کیفی اثر شماست:</p>
-                          <div class="bg-slate-900 p-2 rounded border border-slate-700 text-[10px] font-mono-tech text-cyan-300">
-                          «WE GUARANTEE NO GUARANTEE ON THE CONSUMER AND MARKETING UNLESS CHOSEN OTHERWISE. WHAT WE GUARANTEE IS IMPROVING YOUR QUALITY OF WORK.»
-                          </div>`
-            },
-            tracking: {
-                title: "سشن ضبط (RECORDING SESSION)",
-                badge: "TRACKING_01",
-                content: `<p>رزرو سشن آکوستیک، مایکینگ حرفه‌ای متناسب با سورس (وکال، ساز بادی، الکتریک) با نظارت صدابردار ناظر ضبط.</p>
-                          <ul class="list-disc list-inside text-slate-400 space-y-1">
-                            <li>ارائه برداشت‌های Lead، Double و Fills</li>
-                            <li>تضمین هدروم تمیز بدون کلیپینگ</li>
-                          </ul>`
-            },
-            tuning: {
-                title: "ادیت و تیونینگ (EDITING & TUNING)",
-                badge: "PHASE & PITCH",
-                content: `<p>اصلاح دقیق تایمینگ، تراز فاز میکروفون‌ها، تیون ملوداین شفاف بدون رباتیک شدن صدا و کاهش نویز محیطی لاین‌ها.</p>`
-            },
-            mix: {
-                title: "میکس تخصصی (QUALITY & NOVELTY MIX)",
-                badge: "ANALOG & STEMS",
-                content: `<p>جداسازی فرکانسی سازها، داینامیک کنترل چندبانده، رنگ‌آمیزی با سچوریشن آنالوگ و ایجاد بعد استریو حرفه‌ای.</p>`
-            },
-            full: {
-                title: "پکیج کامل پروداکشن (ZERO-TO-HERO)",
-                badge: "ALL-IN-ONE",
-                content: `<p>شامل آهنگسازی اختصاصی، ضبط استودیویی، ادیت تمیز، میکس استم‌ها و مسترینگ نهایی متناسب با پلتفرم‌های جهانی نظیر Spotify و Apple Music.</p>`
-            }
-        };
-
-        function showModal(key) {
-            playBeep(900, 'sine');
-            const data = modalData[key];
-            if (!data) return;
-            document.getElementById('modal-title').innerText = data.title;
-            document.getElementById('modal-badge').innerText = data.badge;
-            document.getElementById('modal-body').innerHTML = data.content;
-            document.getElementById('cyber-modal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            playBeep(450, 'sine');
-            document.getElementById('cyber-modal').classList.add('hidden');
-        }
-
-        function selectService(key) {
-            showModal(key);
-        }
-
-        function requestBooking() {
-            closeModal();
-            playBeep(1100, 'square', 0.15);
-            showToast("درخواست رزرو نوبت به اپراتور استودیو ارسال شد!");
-        }
-
-        // Chat Actions & Command System
-        function triggerAction(action) {
-            playBeep(700, 'sine');
-            if (action === 'attachment') {
-                showToast("سیستم ارسال استم و لاین صوتی آماده است");
-            } else if (action === 'slash') {
-                const input = document.getElementById('user-input');
-                input.value = "/";
-                input.focus();
-            } else if (action === 'emoji') {
-                showToast("K9INE // 猟犬 STUDIO");
-            }
-        }
-
-        function sendCommand() {
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            playBeep(1000, 'sine', 0.1);
-            input.value = '';
-
-            if (text === '/services') {
-                showModal('full');
-            } else if (text === '/pricing' || text === '/price') {
-                toggleCurrency();
-            } else if (text === '/book') {
-                requestBooking();
-            } else if (text === '/status') {
-                showToast("K9INE Core: تمامی سیستم‌ها آنلاین و آماده ضبط هستند");
-            } else {
-                showToast(`دستور "${text}" پردازش شد. اپراتور به زودی پاسخ می‌دهد.`);
-            }
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-text').innerText = msg;
-            toast.style.opacity = '1';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-            }, 2500);
-        }
-
-        // Telegram WebApp Initialization Hook
-        window.addEventListener('DOMContentLoaded', () => {
-            if (window.Telegram && window.Telegram.WebApp) {
-                try {
-                    window.Telegram.WebApp.ready();
-                    window.Telegram.WebApp.expand();
-                    window.Telegram.WebApp.setHeaderColor('#07090e');
-                    window.Telegram.WebApp.setBackgroundColor('#07090e');
-                } catch(e) {}
-            }
-        });
     </script>
 </body>
 </html>
